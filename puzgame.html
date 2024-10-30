@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Number Puzzle</title>
+<style>
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
+    grid-template-rows: repeat(3, 100px);
+    gap: 5px;
+  }
+  .grid-item {
+    border: 1px solid #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  .hidden {
+    visibility: hidden;
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-container" id="grid">
+  <div class="grid-item" data-number="1" onclick="moveNumber(this)">1</div>
+  <div class="grid-item" data-number="2" onclick="moveNumber(this)">2</div>
+  <div class="grid-item" data-number="3" onclick="moveNumber(this)">3</div>
+  <div class="grid-item" data-number="4" onclick="moveNumber(this)">4</div>
+  <div class="grid-item" data-number="5" onclick="moveNumber(this)">5</div>
+  <div class="grid-item" data-number="6" onclick="moveNumber(this)">6</div>
+  <div class="grid-item" data-number="7" onclick="moveNumber(this)">7</div>
+  <div class="grid-item" data-number="8" onclick="moveNumber(this)">8</div>
+  <div class="grid-item hidden" id="number9">9</div>
+</div>
+
+<script>
+  let correctOrder = ["1", "2", "3", "4", "5", "6", "7", "8"];
+  
+  function moveNumber(element) {
+    let grid = document.getElementById('grid');
+    let items = grid.getElementsByClassName('grid-item');
+    
+    // Check if the clicked number is movable
+    if (element.textContent === '9') return;
+    
+    // Find empty cell
+    let emptyCell = Array.from(items).find(item => item.textContent === '9');
+    let currentIndex = Array.from(items).indexOf(element);
+    let emptyIndex = Array.from(items).indexOf(emptyCell);
+    
+    // Check if the clicked number is next to the empty cell
+    if ((emptyIndex === currentIndex - 1 && currentIndex % 3 !== 0) || 
+        (emptyIndex === currentIndex + 1 && currentIndex % 3 !== 2) ||
+        emptyIndex === currentIndex - 3 ||
+        emptyIndex === currentIndex + 3) {
+      // Swap numbers
+      [element.textContent, emptyCell.textContent] = [emptyCell.textContent, element.textContent];
+      
+      // Check if the numbers are in correct order
+      let currentOrder = Array.from(items).map(item => item.textContent);
+      if (JSON.stringify(currentOrder) === JSON.stringify(correctOrder)) {
+        document.getElementById('number9').classList.remove('hidden');
+      }
+    }
+  }
+</script>
+
+</body>
+</html>

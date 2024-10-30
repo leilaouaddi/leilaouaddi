@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Leila Ouaddi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+@import url(indexstyles.css);
+</style>
+</head>
+<header>
+<h1>Leila Ouaddi <height="200" width="400"></h1>
+<body>
+  <nav>
+    <ul>
+	<li><a href="index.html">Home</a></li>
+ 	<li><a href="Me.html">About Me</a></li>
+	<li><a href="SO.html">Some of my favorites</a></li>
+	<li><a href="Puzzle.html">Puzzle Game</a></li>
+
+	
+    </ul>
+  </nav>  
+    <title>Sliding Puzzle</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 300px;
+            height: 300px;
+        }
+
+        td {
+            width: 75px;
+            height: 75px;
+            border: 1px solid black;
+            text-align: center;
+            font-size: 24px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sliding Puzzle</h1>
+    <table id="puzzle">
+    </table>
+    <p>Moves: <span id="moves">0</span></p>
+    <p>Time: <span id="time">0s</span></p>
+    <button onclick="newGame()">New Game</button>
+    <button onclick="simpleGame()">Simple Game</button>
+
+    <script>
+        let board = [];
+        let emptyRow = 3;
+        let emptyCol = 3;
+        let moves = 0;
+        let startTime, endTime;
+
+        function shuffleBoard() {
+            for (let i = 0; i < 15; i++) {
+                board.push(i + 1);
+            }
+            for (let i = 0; i < 15; i++) {
+                const randomIndex = Math.floor(Math.random() * 15);
+                [board[i], board[randomIndex]] = [board[randomIndex], board[i]];
+            }
+        }
+
+        function createBoard() {
+            let table = document.getElementById("puzzle");
+            let count = 0;
+            for (let i = 0; i < 4; i++) {
+                let row = table.insertRow(i);
+                for (let j = 0; j < 4; j++) {
+                    let cell = row.insertCell(j);
+                    if (count < 15) {
+                        cell.textContent = board[count];
+                        cell.onclick = () => moveTile(i, j);
+                        count++;
+                    }
+                }
+            }
+        }
+
+        function moveTile(row, col) {
+            if ((row === emptyRow && Math.abs(col - emptyCol) === 1) ||
+                (col === emptyCol && Math.abs(row - emptyRow) === 1)) {
+                board[emptyRow * 4 + emptyCol] = board[row * 4 + col];
+                board[row * 4 + col] = 0;
+                emptyRow = row;
+                emptyCol = col;
+                moves++;
+                document.getElementById("moves").textContent = moves;
+                updateBoard();
+                if (isGameOver()) {
+                    endTime = new Date();
+                    const timeDiff = (endTime - startTime) / 1000;
+                    document.getElementById("time").textContent = timeDiff + "s";
+                    alert("Congratulations! You've solved the puzzle in " + moves + " moves.");
+                }
+            }
+        }
+
+        function isGameOver() {
+            for (let i = 0; i < 15; i++) {
+                if (board[i] !== i + 1) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function updateBoard() {
+            let cells = document.getElementsByTagName("td");
+            for (let i = 0; i < 15; i++) {
+                cells[i].textContent = board[i];
+            }
+        }
+
+        function newGame() {
+            board = [];
+            emptyRow = 3;
+            emptyCol = 3;
+            moves = 0;
+            document.getElementById("moves").textContent = moves;
+            startTime = new Date();
+            shuffleBoard();
+            createBoard();
+            updateBoard();
+        }
+
+        function simpleGame() {
+            board = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0, 15];
+            emptyRow = 3;
+            emptyCol = 2;
+            moves = 0;
+            document.getElementById("moves").textContent = moves;
+            startTime = new Date();
+            createBoard();
+            updateBoard();
+        }
+
+        newGame();
+    </script>
+</body>
+</html>
